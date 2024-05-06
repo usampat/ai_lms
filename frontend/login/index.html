@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="../header/header.css">
+</head>
+<body>
+    <!------------------------ Header ------------------------->
+    <div class="navbar">
+        <div class="header-logo">
+        <img src="../assets/logo.png" alt="Logo" width="100px" height="100px"/>
+        </div>
+        <ul class="nav_items">
+        <li>
+            <a href="/" class="nav_link">Home</a>
+        </li>
+        <li>
+            <a href="#" class="nav_link">Documentation</a>
+        </li>
+        <li>
+            <a href="/pricing" class="nav_link">Pricing</a>
+        </li>
+        </ul>
+        <div>
+            <button id="login_btn" class="login_btn">Login/Signup</button>
+        </div>
+    </div>
+    <!------------------------------------------------------->
+
+    <!------------------------ Main ------------------------->
+    <div class='login-container'>
+        <h2 class='login-heading'>Login</h2>
+        <div class='login-box'>
+            <img src="../assets/login.jpg" alt="" class="logo" width="400px" height="400px">
+
+            <div class='login-fields'>
+                <div class='input-field'>
+                    <label for="email">Email: </label>
+                    <input type="email" name="email" id="email">
+                </div>
+
+                <div class='input-field'>
+                    <label for="password">Password: </label>
+                    <input type="password" name="password" id="password">
+                </div>
+
+                <button id="loginBtn" class='login-btn'>Login</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="login.js"/>
+</body>
+</html>
