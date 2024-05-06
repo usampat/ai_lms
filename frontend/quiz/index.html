@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <link rel="stylesheet" href="quiz.css">
+    <link rel="stylesheet" href="../header/header.css">
+</head>
+<body>
+    <!------------------------ Header ------------------------->
+    <div class="navbar">
+        <div class="header-logo">
+        <img src="../assets/logo.png" alt="Logo" width="100px" height="100px"/>
+        </div>
+        <ul class="nav_items">
+        <li>
+            <a href="/" class="nav_link">Home</a>
+        </li>
+        <li>
+            <a href="#" class="nav_link">Documentation</a>
+        </li>
+        <li>
+            <a href="/pricing" class="nav_link">Pricing</a>
+        </li>
+        </ul>
+    <div>
+        <button class="login_btn">Login/Signup</button>
+    </div>
+    </div>
+    <!------------------------------------------------------->
+
+    <!------------------------ Main ------------------------->
+    <section class="dashboard-container">
+        <div class="left-side">
+            <img src="https://cdn-icons-png.flaticon.com/128/8377/8377124.png" alt="" class="togglebtn">
+
+            <div class="left-side-links">
+                <h3>Classes</h3>
+                <ul class="links">
+                    <li><a href="/">Landing</a></li>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/pricing">Pricing</a></li>
+                    <li><a href="/quiz">Quiz</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="right-side">
+            <div class="quiz-container">
+                <div class="questions">
+                    <h2>MCQ Questions 01?</h2>
+                    <div class="question-list">
+                        <div class="question">
+                            <input type="radio" name="question1" id="q1-option1">
+                            <label for="q1-option1">Option 1</label>
+                        </div>
+                        <div class="question">
+                            <input type="radio" name="question1" id="q1-option2">
+                            <label for="q1-option2">Option 2</label>
+                        </div>
+                        <div class="question">
+                            <input type="radio" name="question1" id="q1-option3">
+                            <label for="q1-option3">Option 3</label>
+                        </div>
+                        <div class="question">
+                            <input type="radio" name="question1" id="q1-option4">
+                            <label for="q1-option4">Option 4</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="questions">
+                    <h2>MCQ Questions 02?</h2>
+                    <div class="question-list">
+                        <div class="question">
+                            <input type="radio" name="question2" id="q2-option1">
+                            <label for="q2-option1">Option 1</label>
+                        </div>
+                        <div class="question">
+                            <input type="radio" name="question2" id="q2-option2">
+                            <label for="q2-option2">Option 2</label>
+                        </div>
+                        <div class="question">
+                            <input type="radio" name="question2" id="q2-option3">
+                            <label for="q2-option3">Option 3</label>
+                        </div>
+                        <div class="question">
+                            <input type="radio" name="question2" id="q2-option4">
+                            <label for="q2-option4">Option 4</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const togglebtn = document.querySelector('.togglebtn');
+        const leftSide = document.querySelector('.left-side');
+
+        togglebtn.addEventListener('click', () => {
+            leftSide.classList.toggle('collapsed');
+        });
+    </script>
+</body>
+</html>
