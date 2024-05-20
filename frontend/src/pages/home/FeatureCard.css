@@ -1,0 +1,53 @@
+.feature-card {
+  height: 200px;
+
+  background-color: #90e0ef;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+  padding: 20px;
+  width: 300px;
+  flex: 1;
+  max-width: 300px;
+  transition: all 0.3s ease-in-out;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.feature-title {
+  font-weight: bold;
+  font-size: 30px;
+  opacity: 1;
+  transition: opacity 0.3s ease-in;
+}
+
+.feature-desc {
+  position: absolute;
+  font-size: 1em;
+  color: #555;
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+}
+
+.feature-card:hover {
+  transform: scale(1.05);
+  background-color: #7bbdc9;
+}
+
+.feature-card:hover .feature-title {
+  opacity: 0;
+}
+
+.feature-card:hover .feature-desc {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .feature-card {
+    width: 80%;
+    max-width: none;
+  }
+}
