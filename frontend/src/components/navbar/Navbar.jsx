@@ -1,5 +1,6 @@
-import  { useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+
 import './Navbar.css'
 
 function Navbar() {
@@ -11,7 +12,7 @@ function Navbar() {
 
   return (
     <nav className='navbar'>
-      <div className='navbar-brand'>My LMS</div>
+      <div className='navbar-brand'>AI LMS</div>
       <div className='burger-menu' onClick={toggleNavbar}>
         <div className={`bar ${isOpen ? 'open' : ''}`}></div>
         <div className={`bar ${isOpen ? 'open' : ''}`}></div>

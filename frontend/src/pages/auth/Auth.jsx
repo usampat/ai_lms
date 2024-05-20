@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import './Auth.css'
+import Navbar from '../../components/navbar/Navbar'
 
 const demoUsers = {
   students: [
@@ -46,51 +47,55 @@ function Auth() {
   }
 
   return (
-    <div className='page'>
-      <div className='auth'>
-        <h1>{isLogin ? 'Login' : 'Signup'}</h1>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            handleAuth()
-          }}
-        >
-          <div className='input-group'>
-            <label htmlFor='role'>Role:</label>
-            <select
-              id='role'
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-            >
-              <option value='student'>Student</option>
-              <option value='teacher'>Teacher</option>
-            </select>
-          </div>
-          <div className='input-group'>
-            <label htmlFor='username'>Username:</label>
-            <input
-              id='username'
-              type='text'
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
-          <div className='input-group'>
-            <label htmlFor='password'>Password:</label>
-            <input
-              id='password'
-              type='password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button type='submit'>{isLogin ? 'Login' : 'Signup'}</button>
-        </form>
-        <button onClick={() => setIsLogin(!isLogin)}>
-          Switch to {isLogin ? 'Signup' : 'Login'}
-        </button>
+    <div>
+      <Navbar />
+      
+      <div className='page'>
+        <div className='auth'>
+          <h1>{isLogin ? 'Login' : 'Signup'}</h1>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              handleAuth()
+            }}
+          >
+            <div className='input-group'>
+              <label htmlFor='role'>Role:</label>
+              <select
+                id='role'
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+              >
+                <option value='student'>Student</option>
+                <option value='teacher'>Teacher</option>
+              </select>
+            </div>
+            <div className='input-group'>
+              <label htmlFor='username'>Username:</label>
+              <input
+                id='username'
+                type='text'
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
+            <div className='input-group'>
+              <label htmlFor='password'>Password:</label>
+              <input
+                id='password'
+                type='password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <button type='submit'>{isLogin ? 'Login' : 'Signup'}</button>
+          </form>
+          <button onClick={() => setIsLogin(!isLogin)}>
+            Switch to {isLogin ? 'Signup' : 'Login'}
+          </button>
+        </div>
       </div>
     </div>
   )

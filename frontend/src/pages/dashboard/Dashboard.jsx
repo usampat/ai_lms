@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react'
+
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+
+import Navbar from '../../components/navbar/Navbar'
+
 import './Dashboard.css'
 
 const mockOrganizations = [
@@ -157,31 +161,120 @@ const Dashboard = () => {
   }
 
   return (
-    <div className='dashboard-container page'>
-      <h2>Dashboard</h2>
+    <div>
+      <Navbar />
 
-      <div className='top-section'>
-        {user?.role === 'teacher' ? (
-          <>
-            <button onClick={() => setShowOrgModal(true)}>
-              Join Organization
-            </button>
-            <button onClick={() => setShowAssignmentModal(true)}>
-              Add New Assignment
-            </button>
-          </>
-        ) : (
-          <button onClick={() => setShowClassModal(true)}>Join Class</button>
+      <div className='dashboard-container page'>
+        <h2>Dashboard</h2>
+
+        <div className='top-section'>
+          {user?.role === 'teacher' ? (
+            <>
+              <button onClick={() => setShowOrgModal(true)}>
+                Join Organization
+              </button>
+              <button onClick={() => setShowAssignmentModal(true)}>
+                Add New Assignment
+              </button>
+            </>
+          ) : (
+            <button onClick={() => setShowClassModal(true)}>Join Class</button>
+          )}
+        </div>
+
+        {showOrgModal && (
+          <div className='modal'>
+            <div className='modal-content'>
+              <span className='close' onClick={() => setShowOrgModal(false)}>
+                &times;
+              </span>
+              <h3>Select Organization</h3>
+              <select onChange={(e) => setSelectedOrg(e.target.value)}>
+                <option value=''>Select Organization</option>
+                {mockOrganizations.map((org) => (
+                  <option key={org.id} value={org.id}>
+                    {org.name}
+                  </option>
+                ))}
+              </select>
+              <button onClick={() => handleJoinOrganization(selectedOrg)}>
+                Join
+              </button>
+            </div>
+          </div>
         )}
-      </div>
 
-      {showOrgModal && (
-        <div className='modal'>
-          <div className='modal-content'>
-            <span className='close' onClick={() => setShowOrgModal(false)}>
-              &times;
-            </span>
-            <h3>Select Organization</h3>
+        {showClassModal && (
+          <div className='modal'>
+            <div className='modal-content'>
+              <span className='close' onClick={() => setShowClassModal(false)}>
+                &times;
+              </span>
+              <h3>Select Class</h3>
+              <select onChange={(e) => setSelectedClass(e.target.value)}>
+                <option value=''>Select Class</option>
+                {availableClasses.map((cls) => (
+                  <option key={cls.id} value={cls.id}>
+                    {cls.name}
+                  </option>
+                ))}
+              </select>
+              <button onClick={() => handleJoinClass(selectedClass)}>Join</button>
+            </div>
+          </div>
+        )}
+
+        {showGradeModal && (
+          <div className='modal'>
+            <div className='modal-content'>
+              <span className='close' onClick={() => setShowGradeModal(false)}>
+                &times;
+              </span>
+              <h3>Grade Assignment</h3>
+              <p>
+                Grading {currentStudent?.name} for{' '}
+                {
+                  mockAssignments.find(
+                    (a) => a.id === parseInt(selectedAssignment)
+                  )?.name
+                }
+              </p>
+              <input
+                type='text'
+                placeholder='Enter grade'
+                value={newGrade}
+                onChange={(e) => setNewGrade(e.target.value)}
+              />
+              <button onClick={handleSaveGrade}>Save</button>
+            </div>
+          </div>
+        )}
+
+        {showAssignmentModal && (
+          <div className='modal'>
+            <div className='modal-content'>
+              <span
+                className='close'
+                onClick={() => setShowAssignmentModal(false)}
+              >
+                &times;
+              </span>
+              <h2>Add New Assignment</h2>
+              <label htmlFor='assignmentName'>Assignment Name:</label>
+              <input
+                type='text'
+                id='assignmentName'
+                value={newAssignmentName}
+                onChange={(e) => setNewAssignmentName(e.target.value)}
+                placeholder='Enter assignment name'
+              />
+              <button onClick={handleSaveAssignment}>Save</button>
+            </div>
+          </div>
+        )}
+
+        <div className='filter-section'>
+          <div className='filters'>
             <select onChange={(e) => setSelectedOrg(e.target.value)}>
               <option value=''>Select Organization</option>
               {mockOrganizations.map((org) => (
@@ -190,21 +283,10 @@ const Dashboard = () => {
                 </option>
               ))}
             </select>
-            <button onClick={() => handleJoinOrganization(selectedOrg)}>
-              Join
-            </button>
-          </div>
-        </div>
-      )}
-
-      {showClassModal && (
-        <div className='modal'>
-          <div className='modal-content'>
-            <span className='close' onClick={() => setShowClassModal(false)}>
-              &times;
-            </span>
-            <h3>Select Class</h3>
-            <select onChange={(e) => setSelectedClass(e.target.value)}>
+            <select
+              onChange={(e) => setSelectedClass(e.target.value)}
+              disabled={!selectedOrg}
+            >
               <option value=''>Select Class</option>
               {availableClasses.map((cls) => (
                 <option key={cls.id} value={cls.id}>
@@ -212,106 +294,32 @@ const Dashboard = () => {
                 </option>
               ))}
             </select>
-            <button onClick={() => handleJoinClass(selectedClass)}>Join</button>
+            <select onChange={(e) => setSelectedAssignment(e.target.value)}>
+              <option value=''>Select Assignment</option>
+              {mockAssignments.map((assgn) => (
+                <option key={assgn.id} value={assgn.id}>
+                  {assgn.name}
+                </option>
+              ))}
+            </select>
+            <button onClick={handleApplyFilters}>Apply</button>
           </div>
-        </div>
-      )}
 
-      {showGradeModal && (
-        <div className='modal'>
-          <div className='modal-content'>
-            <span className='close' onClick={() => setShowGradeModal(false)}>
-              &times;
-            </span>
-            <h3>Grade Assignment</h3>
-            <p>
-              Grading {currentStudent?.name} for{' '}
-              {
-                mockAssignments.find(
-                  (a) => a.id === parseInt(selectedAssignment)
-                )?.name
-              }
-            </p>
-            <input
-              type='text'
-              placeholder='Enter grade'
-              value={newGrade}
-              onChange={(e) => setNewGrade(e.target.value)}
-            />
-            <button onClick={handleSaveGrade}>Save</button>
+          <div className='students-list'>
+            {filteredStudents.map((student) => (
+              <div key={student.id} className='student'>
+                <span>
+                  {student.name} - Grade:{' '}
+                  {student.grades[selectedAssignment] || 'NONE'}
+                </span>
+                {user?.role === 'teacher' && (
+                  <button onClick={() => handleGradeAssignment(student)}>
+                    Grade Assignment
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
-        </div>
-      )}
-
-      {showAssignmentModal && (
-        <div className='modal'>
-          <div className='modal-content'>
-            <span
-              className='close'
-              onClick={() => setShowAssignmentModal(false)}
-            >
-              &times;
-            </span>
-            <h2>Add New Assignment</h2>
-            <label htmlFor='assignmentName'>Assignment Name:</label>
-            <input
-              type='text'
-              id='assignmentName'
-              value={newAssignmentName}
-              onChange={(e) => setNewAssignmentName(e.target.value)}
-              placeholder='Enter assignment name'
-            />
-            <button onClick={handleSaveAssignment}>Save</button>
-          </div>
-        </div>
-      )}
-
-      <div className='filter-section'>
-        <div className='filters'>
-          <select onChange={(e) => setSelectedOrg(e.target.value)}>
-            <option value=''>Select Organization</option>
-            {mockOrganizations.map((org) => (
-              <option key={org.id} value={org.id}>
-                {org.name}
-              </option>
-            ))}
-          </select>
-          <select
-            onChange={(e) => setSelectedClass(e.target.value)}
-            disabled={!selectedOrg}
-          >
-            <option value=''>Select Class</option>
-            {availableClasses.map((cls) => (
-              <option key={cls.id} value={cls.id}>
-                {cls.name}
-              </option>
-            ))}
-          </select>
-          <select onChange={(e) => setSelectedAssignment(e.target.value)}>
-            <option value=''>Select Assignment</option>
-            {mockAssignments.map((assgn) => (
-              <option key={assgn.id} value={assgn.id}>
-                {assgn.name}
-              </option>
-            ))}
-          </select>
-          <button onClick={handleApplyFilters}>Apply</button>
-        </div>
-
-        <div className='students-list'>
-          {filteredStudents.map((student) => (
-            <div key={student.id} className='student'>
-              <span>
-                {student.name} - Grade:{' '}
-                {student.grades[selectedAssignment] || 'NONE'}
-              </span>
-              {user?.role === 'teacher' && (
-                <button onClick={() => handleGradeAssignment(student)}>
-                  Grade Assignment
-                </button>
-              )}
-            </div>
-          ))}
         </div>
       </div>
     </div>
