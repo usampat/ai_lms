@@ -1,0 +1,41 @@
+.sidebar {
+    height: 100vh;
+    background-color: #343a40; /* Change as needed */
+    color: white;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+  }
+  
+  .sidebar.expanded {
+    width: 200px; /* Adjust as needed */
+  }
+  
+  .sidebar.collapsed {
+    width: 80px; /* Adjust as needed */
+  }
+  
+  .link {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: white;
+    width: 100%;
+  }
+  
+  .link .icon {
+    margin-right: 10px;
+  }
+  
+  .link.active {
+    background-color: #495057; /* Adjust as needed */
+  }
+  
+  .link_text {
+    display: none; /* Ensure link text is hidden when collapsed */
+  }
+  
