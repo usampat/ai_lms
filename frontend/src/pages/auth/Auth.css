@@ -1,11 +1,19 @@
 .auth {
   max-width: 400px;
+  max-height: 100vh;
   margin: 50px auto;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 10px;
   background-color: #90e0ef;
   text-align: center;
+}
+
+.toggle-button{
+  display: flex;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
 }
 
 .auth h1 {
@@ -23,20 +31,34 @@
 
 .input-group input,
 .input-group select {
-  width: 100%;
+  width: 100%; /* Set width to 100% for all screen sizes */
   padding: 8px;
   box-sizing: border-box;
 }
 
-.box {
-  display: flex;
-  height: 100vh; /* Remove quotes around 100vh */
-  /* width: 30%; */
-  justify-content: center;
-  margin-top: 5%;
-  /* border: 2px solid black; */
+/* Add media query for mobile devices */
+@media (max-width: 768px) {
+  .input-group input,
+  .input-group select {
+    width: calc(100% - 10%); /* Calculate width to leave space for padding */
+  }
 }
 
+
+.box {
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; 
+  height: 100vh;
+  width: 30%;
+}
+
+.toggle-row,
+.form-row {
+  width: 100%; /* Ensure full width */
+  margin-bottom: 20px; /* Add space between rows */
+}
 .form {
   margin-top: 10px;
 }

@@ -1,6 +1,7 @@
 .home {
   padding: 20px;
   text-align: center;
+  color: var(--secondary);
 }
 
 .home h1 {

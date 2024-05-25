@@ -2,12 +2,13 @@ import "./Home.css";
 
 import Navbar from "../../components/navbar/Navbar";
 import FeatureCard from "./FeatureCard";
+import Background from "../../components/background/Background";
 
 function Home() {
   return (
     <div>
       <Navbar />
-
+      <Background/>
       <div className="home page">
         <h1>AI powered LMS system</h1>
         <p>

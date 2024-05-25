@@ -13,7 +13,9 @@ html, body, .main, .content-row, .sidebar-col, .content-col {
 
 .content-row {
   flex: 1;
+  background-color:blue;
   display: flex;
+  width:100%;
 }
 
 .sidebar-col {
@@ -21,15 +23,20 @@ html, body, .main, .content-row, .sidebar-col, .content-col {
   flex-direction: column;
   height: 100%;
   overflow-y: auto; 
+  overflow-x: hidden;
+  width: 8%; 
+  transition: width 0.3s;
+}
+
+.sidebar-col.expanded {
+  width: 23%; 
 }
 
 @media (max-width: 767px) {
- 
   .sidebar-col {
     display: none;
   }
 
-  
   .sidebar-toggle {
     display: flex;
     align-items: center;
@@ -49,13 +56,26 @@ html, body, .main, .content-row, .sidebar-col, .content-col {
   }
 }
 
-
 .sidebar-col, .content-col {
   height: 100%;
 }
 
+.content-col {
+  flex: 1;
+  transition: flex 0.3s; 
+}
+
+.content-col.collapsed {
+  flex: 1 1 calc(100% - 8%); 
+}
+
+.content-col.expanded {
+  flex: 1 1 calc(100% - 23%); 
+}
+
 .dashboard-container {
   padding: 20px;
+  width:100%;
 }
 
 h2 {
@@ -69,7 +89,7 @@ h2 {
   margin-bottom: 20px;
 }
 
-.modal {
+/* .modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -87,7 +107,7 @@ h2 {
   border-radius: 5px;
   position: relative;
   width: 300px;
-}
+} */
 
 .close {
   position: absolute;
@@ -147,9 +167,9 @@ select {
   max-height: 250px;
   justify-content: center;
   border: 2px solid black;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
-  scroll-behavior: auto;
+  /* scroll-behavior: auto; */
 }
 
 .graph1 {
@@ -159,10 +179,99 @@ select {
   border: 2px solid black;
 }
 
+@media (max-width: 768px) {
+  .graph1{
+    margin-top: 10%;
+  }
+}
+
 .graph2 {
   display: flex;
   justify-content: center;
   border: 2px solid black;
   height: 250px;
-  margin-top: 20px
+  margin-top: 20px;
+}
+
+.box-heading {
+    background-color: beige;
+    color: darkslategray;
+    font-weight: bold;
+    padding: 10px;
+    margin: 0;
+    text-align: center;
+    position: absolute; 
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1; /* Ensure the heading appears above other content */
+  }
+
+.box-content {
+  padding-top: 40px; /* Adjust based on the height of the heading */
+  position: relative;
+  height: 250px;
+  margin-bottom: 20px; /* Add margin at the bottom for spacing */
+}
+
+.news-content {
+  overflow-y: hidden;
+  height:210px;
+  margin-top:40px;
+}
+
+.graph-box {
+  background-color: beige;
+  border: 2px solid black;
+  padding: 10px;
+}
+
+.news,
+.graph1,
+.graph2 {
+  background-color: white;
+  border: 2px solid black;
+  padding: 10px;
+  /* overflow-y: auto; */
+  position: relative;
+}
+
+.news {
+  margin-right: 8%;
+  border: 2px solid black;
+  padding: 10px;
+  /* overflow-y: auto; */
+  max-height: 250px; 
+}
+
+
+.graph1,
+.graph2 {
+  height: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dashboard-container {
+  padding: 20px;
+}
+
+h2 {
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .news,
+  .graph1,
+  .graph2 {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100%;
+  }
+
+  .box-content {
+    margin-left: 0;
+    margin-right: 0;
+  }
 }

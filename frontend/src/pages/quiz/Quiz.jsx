@@ -1,95 +1,48 @@
 import React, { useState } from "react";
 import Header from "../../components/navbar/Navbar";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import Sidebar from "../../components/Sidebar/sidebar";
 import "./Quiz.css";
+import Quizpage from "../../components/quizpage/quizpage";
 
 const Quiz = () => {
   const [showSideBar, setShowSideBar] = useState(false);
-  const [answers, setAnswers] = useState({});
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [quizId,setQuizId]=useState(1);
+  const [quizName,setQuizName]=useState('');
+  // const [answers, setAnswers] = useState({});
+
+  const handleStartQuiz = (id,name) => {
+    setQuizId(id);
+    setQuizName(name);
+    setShowQuiz(true); // Display the quiz page when the "Start" button is clicked
+  };
 
   const toggleSidebar = () => {
     setShowSideBar(!showSideBar);
   };
 
-  const questions = [
-    {
-      question: "What is the time complexity of binary search?",
-      options: ["O(n)", "O(log n)", "O(n^2)", "O(1)"],
-      correctAnswer: 1,
-    },
-    {
-      question: "Which language is primarily used for web development?",
-      options: ["Python", "Java", "JavaScript", "C++"],
-      correctAnswer: 2,
-    },
-    {
-      question: "What does CPU stand for?",
-      options: ["Central Processing Unit", "Central Process Unit", "Central Processing Universal", "Computer Personal Unit"],
-      correctAnswer: 0,
-    },
-    {
-        question: "What is the capital of France?",
-        options: ["London", "Berlin", "Paris", "Madrid"],
-        correctAnswer: 2,
-      },
-      {
-        question: "Who wrote 'To Kill a Mockingbird'?",
-        options: ["Harper Lee", "J.K. Rowling", "Charles Dickens", "F. Scott Fitzgerald"],
-        correctAnswer: 0,
-      },
-      {
-        question: "What is the chemical symbol for water?",
-        options: ["Wa", "Wt", "H2O", "Hy"],
-        correctAnswer: 2,
-      },
-      {
-        question: "Which planet is known as the Red Planet?",
-        options: ["Earth", "Mars", "Venus", "Jupiter"],
-        correctAnswer: 1,
-      },
-      {
-        question: "What year did the Titanic sink?",
-        options: ["1912", "1922", "1902", "1892"],
-        correctAnswer: 0,
-      },
-      {
-        question: "What is the largest mammal in the world?",
-        options: ["Elephant", "Blue whale", "Giraffe", "Hippo"],
-        correctAnswer: 1,
-      },
-      {
-        question: "What is the chemical symbol for gold?",
-        options: ["Au", "Ag", "Al", "At"],
-        correctAnswer: 0,
-      },
-      {
-        question: "Who painted the Mona Lisa?",
-        options: ["Leonardo da Vinci", "Pablo Picasso", "Vincent van Gogh", "Michelangelo"],
-        correctAnswer: 0,
-      },
-      {
-        question: "What is the tallest mountain in the world?",
-        options: ["K2", "Kangchenjunga", "Mount Everest", "Makalu"],
-        correctAnswer: 2,
-      },
-      {
-        question: "What is the currency of Japan?",
-        options: ["Yuan", "Dollar", "Yen", "Rupee"],
-        correctAnswer: 2,
-      },
+  const handleQuizSubmission = () => {
+    setShowQuiz(false); 
+  };
+
+  const quizData = [
+    { id: 1, name: "Quiz 1 (Computer Science)" },
+    { id: 2, name: "Quiz 2 (Geography)" },
+    { id: 3, name: "Quiz 3 (General Knowledge)" },
+    { id: 4, name: "Quiz 4 (History)" },
   ];
 
-  const handleAnswerClick = (questionIndex, optionIndex) => {
-    setAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [questionIndex]: optionIndex,
-    }));
-  };
+  // const handleAnswerClick = (questionIndex, optionIndex) => {
+  //   setAnswers((prevAnswers) => ({
+  //     ...prevAnswers,
+  //     [questionIndex]: optionIndex,
+  //   }));
+  // };
 
-  const isCorrectAnswer = (questionIndex, optionIndex) => {
-    return questions[questionIndex].correctAnswer === optionIndex;
-  };
+  // const isCorrectAnswer = (questionIndex, optionIndex) => {
+  //   return questions[questionIndex].correctAnswer === optionIndex;
+  // };
 
   return (
     <Container fluid className="main">
@@ -97,36 +50,35 @@ const Quiz = () => {
         <Header toggleSidebar={toggleSidebar} dashboard={true} />
       </Row>
       <Row className="content-row">
-        <Col className="sidebar-col" sm={showSideBar ? 2 : 1}>
+        <Col className={`sidebar-col ${showSideBar ? "expanded" : ""}`}>
           <Sidebar showSideBar={showSideBar} />
         </Col>
-        <Col className="content-col" sm={showSideBar ? 10 : 11}>
-          {questions.map((question, qIndex) => (
-            <div key={qIndex} className="quiz-question">
-              <h3>{qIndex+1}.{question.question}</h3>
-              <Row>
-                {question.options.map((option, oIndex) => (
-                    <Col sm={true}>
-                        <button
-                            key={oIndex}
-                            className={`quiz-option ${
-                            answers[qIndex] !== undefined
-                            ? answers[qIndex] === oIndex && isCorrectAnswer(qIndex, oIndex)
-                            ? "correct"
-                            : answers[qIndex] === oIndex && !isCorrectAnswer(qIndex, oIndex)
-                            ? "wrong"
-                            : ""
-                            : ""
-                        }`}
-                        onClick={() => handleAnswerClick(qIndex, oIndex)}
-                        >
-                            {option}
-                        </button>
-                    </Col>
-                    ))}
+        <Col
+          className={`content-col ${showSideBar ? "collapsed" : "expanded"}`}
+        >
+          <h1 style={{display:'flex',justifyContent:'center'}}> QUIZ </h1>
+          <div className="quiz-buttons">
+            {!showQuiz &&quizData.map((quiz,index) => (
+              <Row
+                key={quiz.id}
+                className="quiz-row"
+                style={{ marginTop: "10px", marginLeft:'10px' }}
+              >
+                <Col xs={8}>{quiz.name}</Col>
+                <Col xs={4}>
+                  <Button
+                    variant="success"
+                    onClick={() => handleStartQuiz(quiz.id,quiz.name)}
+                  >
+                    Start
+                  </Button>
+                </Col>
+                <hr className="mt-2 mb-2"/>
               </Row>
-            </div>
-          ))}
+            ))}
+          </div>
+          {/* Render Quizpage component if a quiz is selected */}
+          {showQuiz && <Quizpage quizId={quizId} quizName={quizName} onQuizSubmit={handleQuizSubmission} />}
         </Col>
       </Row>
     </Container>

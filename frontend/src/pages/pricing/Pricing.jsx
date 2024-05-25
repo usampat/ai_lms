@@ -1,22 +1,20 @@
-import { useState } from "react";
-
+// Pricing.jsx
+import React, { useState } from "react";
 import Navbar from "../../components/navbar/Navbar";
-import "./Pricing.css";
-
 import Plan from "./Plan";
-import { Button, Container } from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import { Bounce, ToastContainer, toast } from "react-toastify";
+import Background from "../../components/background/Background";
+import "./Pricing.css";
+import Header from "../../components/navbar/Navbar";
 
 const BasicPlanFeatures = ["Feature 1", "Feature 2", "Feature 3"];
-
 const PremiumPlanFeatures = ["Feature 1", "Feature 2", "Feature 3"];
-
 const EnterpricePlanFeatures = ["Feature 1", "Feature 2", "Feature 3"];
 
 function Pricing() {
-  const [selectedPlan, setSelectedPlan] = useState(1);
-  const subscribeClick = () => {
-    toast.success("Subscribed", {
+  const subscribeClick = (planName) => {
+    toast.success(`Subscribed to ${planName}`, {
       position: "top-right",
       autoClose: 5000,
       hideProgressBar: false,
@@ -28,51 +26,38 @@ function Pricing() {
       transition: Bounce,
     });
   };
+
   return (
     <>
-      <Navbar />
+      <Header/>
       <Container>
-        <div className="pricing-page">
-          <h1>Pricing Plans</h1>
-
-          <div className="pricing-cards">
-            <Plan
-              id={0}
-              title="Basic Plan"
-              price="$20/month"
-              features={BasicPlanFeatures}
-              selectedPlan={selectedPlan}
-              setSelectedPlan={setSelectedPlan}
-            />
-
-            <Plan
-              id={1}
-              title="Premium Plan"
-              price="$40/month"
-              features={PremiumPlanFeatures}
-              selectedPlan={selectedPlan}
-              setSelectedPlan={setSelectedPlan}
-            />
-
-            <Plan
-              id={2}
-              title="Premium Plan"
-              price="$50/month"
-              features={EnterpricePlanFeatures}
-              selectedPlan={selectedPlan}
-              setSelectedPlan={setSelectedPlan}
-            />
-          </div>
-
-          <Button
-            variant="outline-primary"
-            className="subscribe-btn"
-            onClick={subscribeClick}
-          >
-            Subscribe
-          </Button>
+        <Background />
+        <h1 className="pricing-title">Pricing Plans</h1>
+        <div className="pricing-cards-container">
+          <Plan
+            id={0}
+            title="Basic Plan"
+            price="$0/month"
+            features={BasicPlanFeatures}
+            onSubscribe={subscribeClick}
+          />
+          <Plan
+            id={1}
+            title="Premium Plan"
+            price="$20/month"
+            features={PremiumPlanFeatures}
+            onSubscribe={subscribeClick}
+          />
+          <Plan
+            id={2}
+            title="Enterprise Plan"
+            price="$40/month"
+            features={EnterpricePlanFeatures}
+            onSubscribe={subscribeClick}
+          />
         </div>
       </Container>
+
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -86,7 +71,6 @@ function Pricing() {
         theme="light"
         transition={Bounce}
       />
-      <ToastContainer />
     </>
   );
 }

@@ -3,8 +3,6 @@ import { toast } from "react-toastify";
 import {
   Form,
   Container,
-  Row,
-  Col,
   Button,
   ToggleButtonGroup,
   ToggleButton,
@@ -12,6 +10,7 @@ import {
 import "./Auth.css";
 import Header from "../../components/navbar/Navbar";
 import { useNavigate } from "react-router-dom";
+import Background from "../../components/background/Background";
 
 const demoUsers = {
   students: [
@@ -31,20 +30,22 @@ function Auth() {
   const [role, setRole] = useState("student");
   const [name, setName] = useState("");
   const navigate = useNavigate();
+
   function setLoggedInUser(user) {
     localStorage.setItem("loggedInUser", JSON.stringify({ user }));
+    console.log((localStorage.getItem('loggedInUser')));
     localStorage.setItem("auth", "true");
   }
 
   const handleAuth = () => {
     if (isLogin) {
       const user = demoUsers[role === "student" ? "students" : "teachers"].find(
-        (user) => user.username === username && user.password === password,
+        (user) => user.username === username && user.password === password
       );
       if (user) {
         setLoggedInUser({ username, role });
         toast.success("Login successful!");
-        navigate("/dashboard");
+        navigate("/");
       } else {
         toast.error("Invalid credentials");
         localStorage.setItem("auth", false);
@@ -54,36 +55,42 @@ function Auth() {
       demoUsers[role === "student" ? "students" : "teachers"].push(newUser);
       setLoggedInUser({ username, role });
       toast.success("Signup successful!");
-      navigate("/dashboard");
+      navigate("/");
     }
     setUsername("");
     setPassword("");
   };
+
   const handleChange = () => {
     setIsLogin(!isLogin);
   };
+
   return (
     <>
       <Header />
-      <Container className="box">
-        <Row className="toggle-row">
+      <Container className="auth">
+        <Background />
+        <div className="toggle-row">
           <ToggleButtonGroup
             type="checkbox"
             value={isLogin}
             onChange={handleChange}
+            style={{ height: "40px" }}
           >
-            <ToggleButton id="tbg-btn-1" value={true} variant="outline-primary">
+            <ToggleButton className="toggle-button" id="tbg-btn-1" value={true} variant="outline-success">
               Login
             </ToggleButton>
             <ToggleButton
+              className="toggle-button"
               id="tbg-btn-2"
               value={false}
-              variant="outline-primary"
+              variant="outline-success"
             >
               Register
             </ToggleButton>
           </ToggleButtonGroup>
-
+        </div>
+        <div className="form-row">
           <Form
             onSubmit={(e) => {
               e.preventDefault();
@@ -97,6 +104,7 @@ function Auth() {
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 required
+                className="role-select"
               >
                 <option value="student">Student</option>
                 <option value="teacher">Teacher</option>
@@ -110,6 +118,7 @@ function Auth() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
+                  className="name-input"
                 />
               </Form.Group>
             )}
@@ -120,6 +129,7 @@ function Auth() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
+                className="username-input"
               />
             </Form.Group>
             <Form.Group className="mb-3">
@@ -129,15 +139,16 @@ function Auth() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="password-input"
               />
             </Form.Group>
             <div style={{ textAlign: "center" }}>
-              <Button variant="primary" type="submit">
+              <Button variant="success" style={{border:'none'}} type="submit">
                 {isLogin ? "LogIn" : "Signup"}
               </Button>
             </div>
           </Form>
-        </Row>
+        </div>
       </Container>
     </>
   );

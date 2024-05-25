@@ -1,41 +1,59 @@
 .sidebar {
-    height: 100vh;
-    background-color: #343a40; /* Change as needed */
-    color: white;
-    transition: width 0.3s ease;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
-  }
-  
-  .sidebar.expanded {
-    width: 200px; /* Adjust as needed */
-  }
-  
-  .sidebar.collapsed {
-    width: 80px; /* Adjust as needed */
-  }
-  
-  .link {
-    display: flex;
-    align-items: center;
-    padding: 10px 20px;
-    text-decoration: none;
-    color: white;
-    width: 100%;
-  }
-  
-  .link .icon {
-    margin-right: 10px;
-  }
-  
-  .link.active {
-    background-color: #495057; /* Adjust as needed */
-  }
-  
-  .link_text {
-    display: none; /* Ensure link text is hidden when collapsed */
-  }
-  
+  height: 100%;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  margin-left: 0; /* Remove margin from left */
+}
+
+.sidebar.expanded {
+  width: 150px;
+}
+
+.sidebar.collapsed {
+  width: 35px; /* Collapsed width */
+}
+
+.icons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.link {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: start;
+  padding: 10px 0; /* Adjust vertical padding */
+  text-decoration: none;
+  color: white;
+  width: 150px;
+  transition: width 0.3s ease; /* Add transition for width */
+}
+
+.link.expanded {
+  width: 150px;
+}
+
+.link .icon {
+  margin-right: 10px;
+}
+
+.link.active {
+  justify-content: space-evenly;
+  padding:8px 2px 8px 2px;
+  background-color: #495057; /* Adjust color if needed */
+  width: auto; /* Match sidebar width */
+  transition: width 0.3s ease; /* Add transition for width */
+}
+
+.link.active .link-text {
+  display: block; /* Show text for active link */
+}

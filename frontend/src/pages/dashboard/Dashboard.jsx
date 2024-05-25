@@ -5,6 +5,30 @@ import "./Dashboard.css";
 import { Row, Col, Container } from "react-bootstrap";
 import Sidebar from "../../components/Sidebar/sidebar";
 import Header from "../../components/navbar/Navbar";
+import { News, genderData, attendanceData } from "./dashConstants";
+import { Pie, Bar } from "react-chartjs-2";
+
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+} from "chart.js";
+
+// Register ChartJS components
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title
+);
 
 const mockOrganizations = [
   {
@@ -88,7 +112,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (selectedOrg) {
       const org = mockOrganizations.find(
-        (org) => org.id === parseInt(selectedOrg),
+        (org) => org.id === parseInt(selectedOrg)
       );
       setAvailableClasses(org ? org.classes : []);
     } else {
@@ -117,13 +141,13 @@ const Dashboard = () => {
   const handleApplyFilters = () => {
     if (selectedOrg && selectedClass) {
       const studentsInClass = mockStudents.filter(
-        (student) => student.classId === parseInt(selectedClass),
+        (student) => student.classId === parseInt(selectedClass)
       );
       if (studentsInClass.length === 0) toast.error("No students found");
       setFilteredStudents(studentsInClass);
     } else {
       toast.error(
-        "Please select both organization and class to filter students.",
+        "Please select both organization and class to filter students."
       );
     }
   };
@@ -161,69 +185,65 @@ const Dashboard = () => {
   };
 
   const toggleSidebar = () => {
-    setShowSideBar(!showSideBar);
+    setShowSideBar(!showSideBar); 
   };
+
   return (
     <Container fluid className="main">
       <Row>
         <Header toggleSidebar={toggleSidebar} dashboard={true} />
       </Row>
       <Row className="content-row">
-        <Col className="sidebar-col" sm={showSideBar ? 2 : 1}>
+        <Col className={`sidebar-col ${showSideBar ? "expanded" : ""}`}>
           <Sidebar showSideBar={showSideBar} />
         </Col>
-        <Col className="content-col" sm={showSideBar ? 10 : 11}>
-          <div className="dashboard-container page">
+        <Col className={`content-col ${showSideBar ? "collapsed" : "expanded"}`}>
+          <div className="dashboard-container">
             <Container>
-              <h2>Dashboard</h2>
+              <h2>DASHBOARD</h2>
               <Row>
-                <Col className="news" xl={5}>
-                  <marquee
-                    direction="up"
-                    scrollamount="3"
-                    style={{ height: "250px" }}
-                  >
-                    <p>
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Nam hic possimus ducimus modi exercitationem. Repellat
-                      quos pariatur cumque odit necessitatibus quia, mollitia,
-                      vero vel tenetur, ab eveniet consequuntur? Numquam,
-                      explicabo quod, similique maiores voluptates ullam
-                      possimus provident veniam, distinctio iure earum
-                      reprehenderit excepturi eaque non quo. Assumenda sapiente
-                      commodi pariatur eos error. Nobis sequi quaerat.
-                    </p>
-                    <p>
-                      Content 2 Lorem ipsum, dolor sit amet consectetur
-                      adipisicing elit. Nam hic possimus ducimus modi
-                      exercitationem. Repellat quos pariatur cumque odit
-                      necessitatibus quia, mollitia, vero vel tenetur, ab
-                      eveniet consequuntur? Numquam, explicabo quod, similique
-                      maiores voluptates ullam possimus provident veniam,
-                      distinctio iure earum reprehenderit excepturi eaque non
-                      quo. Assumenda sapiente commodi pariatur eos error. Nobis
-                      sequi quaerat.
-                    </p>
-                    <p>
-                      Content 3 Lorem ipsum, dolor sit amet consectetur
-                      adipisicing elit. Nam hic possimus ducimus modi
-                      exercitationem. Repellat quos pariatur cumque odit
-                      necessitatibus quia, mollitia, vero vel tenetur, ab
-                      eveniet consequuntur? Numquam, explicabo quod, similique
-                      maiores voluptates ullam possimus provident veniam,
-                      distinctio iure earum reprehenderit excepturi eaque non
-                      quo. Assumenda sapiente commodi pariatur eos error. Nobis
-                      sequi quaerat.
-                    </p>
-                  </marquee>
+                <Col className="box-content news" xl={5} lg={12}>
+                  <div className="box-heading">Announcements</div>
+                  <div className="news-content">
+                    <marquee
+                      direction="up"
+                      scrollamount="3"
+                      style={{ height: "250px" }}
+                    >
+                      {News.map((x) => {
+                        return (
+                          <React.Fragment key={x.id}>
+                            <span>{x.text}</span>
+                            <hr />
+                          </React.Fragment>
+                        );
+                      })}
+                    </marquee>
+                  </div>
                 </Col>
-                <Col xl={1}></Col>
-                <Col className="graph1" xl={6}>
-                  box2
+                <Col className="box-content graph-box graph1" xl={6} lg={12}>
+                  <div className="box-heading">Male and Female</div>
+                  <Pie data={genderData} />
                 </Col>
               </Row>
-              <Row className="graph2" sm={12}>
-                box3
+              <Row>
+                <Col className=" graph2" xl={12} lg={12}>
+                  <div className="box-heading">Attendance Data</div>
+                  <div style={{ height: "160px", width:'100%' }}>
+                    <Bar
+                      data={attendanceData}
+                      options={{
+                        maintainAspectRatio: false,
+                        scales: {
+                          y: {
+                            beginAtZero: true,
+                            max: 100,
+                          },
+                        },
+                      }}
+                    />
+                  </div>
+                </Col>
               </Row>
             </Container>
           </div>

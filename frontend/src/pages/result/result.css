@@ -1,0 +1,80 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-x: hidden;
+  }
+  
+  .content-row {
+    flex: 1;
+    display: flex;
+  }
+  
+  
+  
+  @media (max-width: 767px) {
+    .sidebar-col {
+      display: none;
+    }
+  
+    .sidebar-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #343a40;
+      color: #fff;
+      height: 50px;
+      cursor: pointer;
+    }
+  
+    .sidebar-toggle-icon {
+      font-size: 24px;
+    }
+  
+    .show-sidebar .sidebar-col {
+      display: flex;
+    }
+  }
+  
+  .sidebar-col, .content-col {
+    height: 100%;
+  }
+  
+  .dashboard-container {
+    padding: 20px;
+  }
+  
+  h2 {
+    text-align: center;
+  }
+  
+  .bar-chart {
+    margin-bottom: 30px;
+  }
+  
+  .semesters-data {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .semester {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+  }
+  
+  .semester h3 {
+    margin-bottom: 10px;
+  }
+  
+  .semester ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .semester ul li {
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+  }
+  

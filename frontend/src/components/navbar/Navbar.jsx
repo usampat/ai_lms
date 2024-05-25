@@ -1,50 +1,43 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Container,
-  Nav,
-  Navbar,
-  NavDropdown,
-  Button,
-  Offcanvas,
-  OffcanvasHeader,
-} from "react-bootstrap";
-// import {Button, Col, Container, Modal, NavLink, Row} from 'react-bootstrap';
+import { Container, Nav, Navbar, Button, Offcanvas } from "react-bootstrap";
 import { IoMdMenu } from "react-icons/io";
-import { IoClose } from "react-icons/io5";
 
 import "./Navbar.css";
-import Sidebar from "../Sidebar/sidebar";
-import Dashboard from "../../pages/dashboard/Dashboard";
 
 function Header({ toggleSidebar, dashboard }) {
   const [isOpen, setIsOpen] = useState(false);
   const [login, setLogin] = useState(localStorage.getItem("auth") === "true");
+  const [role, setRole] = useState('');
   const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768);
 
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
   };
-  const handleClose = () => {
-    setIsOpen(!isOpen);
-  };
   const navigate = useNavigate();
   const handleLogOut = () => {
     localStorage.setItem("auth", false);
-    setLogin(false);
+    // setLogin(false);
     navigate("/auth");
   };
+
   useEffect(() => {
     const handleStorageChange = () => {
       setLogin(localStorage.getItem("auth") === "true");
+      const storedUser = localStorage.getItem('loggedInUser');
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        setRole(user.user.role);
+      }
     };
-
+    handleStorageChange();
     window.addEventListener("storage", handleStorageChange);
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobileView(window.innerWidth <= 768);
@@ -59,11 +52,13 @@ function Header({ toggleSidebar, dashboard }) {
   return (
     <Navbar key="lg" expand="lg" bg="dark" className="bg-body-primary">
       <Container fluid>
-        {login && dashboard && !isMobileView && (
-          <Button onClick={toggleSidebar}>
-            <IoMdMenu />
-          </Button>
+        {console.log(role)}
+        {dashboard && !isMobileView && (
+          <button onClick={toggleSidebar} className="sidebar-icon">
+            <IoMdMenu color="white"/>
+          </button>
         )}
+        {/* {console.log(localStorage.getItem('loggedInUser').length)} */}
         <Navbar.Brand className="navbar-brand">AI LMS</Navbar.Brand>
         <Navbar.Toggle
           aria-controls={`responsive-navbar-nav`}
@@ -83,90 +78,71 @@ function Header({ toggleSidebar, dashboard }) {
           </Offcanvas.Header>
           <Offcanvas.Body className="bg-dark">
             <Nav className="justify-content-end flex-grow-1 pe-3">
-              <Nav.Link href={login ? "/dashboard" : "/"} className="nav-link">
+              <Nav.Link href="/" className="nav-link">
                 Home
               </Nav.Link>
+              {isMobileView && role==='teacher' && (
+                <>
+                  <Link to="/makequiz" className="nav-link" onClick={toggleNavbar}>
+                    Make Quiz
+                  </Link>
+                  <Link
+                    to="/makeassignment"
+                    className="nav-link"
+                    onClick={toggleNavbar}
+                  >
+                    Make Assignments
+                  </Link>
+                 
+                </>
+              )}
+              {isMobileView && (
+                <>
+                  <Link to="/quiz" className="nav-link" onClick={toggleNavbar}>
+                    Quiz
+                  </Link>
+                  <Link
+                    to="/assignments"
+                    className="nav-link"
+                    onClick={toggleNavbar}
+                  >
+                    Assignments
+                  </Link>
+                  <Link
+                    to="/result"
+                    className="nav-link"
+                    onClick={toggleNavbar}
+                  >
+                    Results
+                  </Link>
+                  <Link
+                    to="/chat"
+                    className="nav-link"
+                    onClick={toggleNavbar}
+                  >
+                    Chat
+                  </Link>
+                </>
+              )}
+              
               <Nav.Link href="/pricing">Pricing</Nav.Link>
-              {isMobileView && ( // Render only in mobile view
-              <>
-                <Link to="/quiz" className="nav-link" onClick={toggleNavbar}>
-                  Quiz
-                </Link>
-                <Link to="/assignments" className="nav-link" onClick={toggleNavbar}>
-                  Assignments
-                </Link>
-                <Link to="/dashboard" className="nav-link" onClick={toggleNavbar}>
-                  Dashboard
-                </Link>
-              </>
-            )}
               {login ? (
-                <Nav.Link onClick={handleLogOut} className="nav-link">
-                  LogOut
+                <Nav.Link
+                  onClick={handleLogOut}
+                  className="nav-link highlighted"
+                >
+                  Logout
                 </Nav.Link>
               ) : (
-                <Nav.Link href="/auth" className="nav-link">
-                  LogIn/SignUp
+                <Nav.Link href="/auth" className="nav-link highlighted">
+                  Login / Singup
                 </Nav.Link>
               )}
-              {/* <NavDropdown
-              title="Dropdown"
-              id={`offcanvasNavbarDropdown-expand-lg`}
-            >
-              <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
-              <NavDropdown.Item href="#action4">
-                Another action
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action5">
-                Something else here
-              </NavDropdown.Item>
-            </NavDropdown> */}
             </Nav>
           </Offcanvas.Body>
         </Navbar.Offcanvas>
       </Container>
     </Navbar>
-
-    // <Navbar collapseOnSelect expand="lg" className="bg-body-primary" >
-    // <Container>
-    //   <Navbar.Brand href="/">React-Bootstrap</Navbar.Brand>
-    //   <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-    //   <Navbar.Collapse id="responsive-navbar-nav">
-    //     <Nav className="me-auto">
-    //     </Nav>
-    //     <Nav>
-    //       <Nav.Link href="/">Home</Nav.Link>
-    //       <Nav.Link href="/pricing">
-    //         Pricing
-    //       </Nav.Link>
-    //       <Nav.Link href="/auth">Login/Signup</Nav.Link>
-    //     </Nav>
-    //   </Navbar.Collapse>
-    // </Container>
-    // {/* <nav className="navbar">
-    //   <div className="navbar-brand">
-    //   <IoMdMenu onClick={toggleNavbar} style={{justifyContent:'center',alignItems:'center'}}/>
-    //   AI LMS
-    //   </div>
-    //   <ul className={`navbar-links ${isOpen ? "open" : ""}`}>
-    //   <li>
-    //   <Link to="/" onClick={toggleNavbar}>
-    //   Home
-    //   </Link>
-    //   </li>
-    //   <li>
-    //   <Link to="/pricing" onClick={toggleNavbar}>
-    //   Pricing
-    //   </Link>
-    //   </li>
-    //   <li>
-    //       <Link to="/auth" onClick={toggleNavbar}>
-    //       Login/Signup
-    //       </Link>
-    //       </li>
-    //       </ul>
-    //     </nav> */}
   );
 }
 

@@ -1,0 +1,30 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #b85042;
+  --secondary: #e7e8d1;
+  --ternary: #a7beae;
+  --background: #fafafa;
+}
+
+body {
+  background-color: var(--background);
+  /* background-image: url("./assets/background.jpg"); */
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+li {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+.page {
+  min-height: calc(100vh - 100px);
+}

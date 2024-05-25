@@ -20,8 +20,40 @@ html, body, .main, .content-row, .sidebar-col, .content-col {
     height: 100%;
 }
 .main {
-    overflow-x: hidden;
+    /* overflow-x: hidden; */
 }
+
+/* .sidebar-col {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: hidden; 
+  overflow-x: hidden;
+  width: 8%; 
+  transition: width 0.3s;
+}
+
+.sidebar-col .expanded {
+  width: 23%; 
+}
+
+.content-col {
+  flex: 1;
+  transition: flex 0.3s; 
+  overflow-y: auto !important;
+  background-color: #f8f9fa;
+  padding: 20px;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+.content-col.collapsed {
+  flex: 1 1 calc(100% - 8%); 
+}
+
+.content-col.expanded {
+  flex: 1 1 calc(100% - 23%); 
+} */
 
 .sidebar-col {
     background-color: #343a40;
@@ -63,12 +95,17 @@ html, body, .main, .content-row, .sidebar-col, .content-col {
     margin-bottom: 10px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #007bff;
-    color: white;
+
+    background-color: beige;
+    color: black;
     border: none;
     border-radius: 5px;
   }
   
+  .quiz-option.select {
+    background-color: slategray;
+    color:white;
+  }
   .quiz-option.correct {
     background-color: green;
   }

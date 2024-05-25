@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Header from "../../components/navbar/Navbar";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Container, Row, Col, Card, Form } from "react-bootstrap";
 import Sidebar from "../../components/Sidebar/sidebar";
 import "./Assignments.css";
 
@@ -45,19 +45,27 @@ function Assignments() {
         <Header toggleSidebar={toggleSidebar} dashboard={true} />
       </Row>
       <Row className="content-row">
-        <Col className="sidebar-col" sm={showSideBar ? 2 : 1}>
+        <Col className={`sidebar-col ${showSideBar ? "expanded" : ""}`}>
           <Sidebar showSideBar={showSideBar} />
         </Col>
-        <Col className="content-col" sm={showSideBar ? 10 : 11}>
+        <Col className={`content-col ${showSideBar ? "collapsed":"expanded"}`}>
           <Row>
+            <h2>ASSIGNMENTS</h2>
             {assignments.map((assignment, index) => (
               <Col key={index} md={6} lg={6} xl={6}>
                 <Card className="assignment-card">
                   <Card.Body>
-                    <Card.Title>{assignment.name}</Card.Title>
-                    <Card.Text>Description: {assignment.description}</Card.Text>
-                    <Card.Text>Professor: {assignment.professor}</Card.Text>
-                    <Card.Text>Deadline: {assignment.deadline}</Card.Text>
+                    <Card.Title><b>{assignment.name}</b></Card.Title>
+                    <Card.Text><b>Description:</b> {assignment.description}</Card.Text>
+                    <Card.Text><b>Professor:</b> {assignment.professor}</Card.Text>
+                    <Row>
+                    <Col sm={true}>
+                      <Card.Text><b>Deadline:</b> {assignment.deadline}</Card.Text> 
+                    </Col>
+                    <Col sm={true}>
+                      <Form.Control type="file" size="sm"/>
+                    </Col>
+                    </Row>
                   </Card.Body>
                 </Card>
               </Col>
