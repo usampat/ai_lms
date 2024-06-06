@@ -1,19 +1,31 @@
-const http = require("http");
+const express = require("express");
+const bodyParser = require("body-parser");
 
-// Create an HTTP server
-const server = http.createServer((req, res) => {
-  // Set the response headers
-  res.writeHead(200, { "Content-Type": "text/html" });
+const connectDB = require("./config/db");
+const { handleNotFound, handleError } = require("./middlewares/errorHandler");
+const userRouter = require("./routes/userRoutes");
 
-  // Write the response content
-  res.write("<h1>Hello, Node.js HTTP Server!</h1>");
-  res.end();
+// setting up environment variables
+require("dotenv").config();
+// connecting to database
+connectDB();
+
+// server
+const app = express();
+
+app.use(bodyParser.json());
+
+app.use("/user", userRouter);
+app.use(handleNotFound);
+app.use(handleError);
+
+app.get("/health", (req, res) => {
+  res.send({
+    health: "good",
+  });
 });
-
-// Specify the port to listen on
-const port = 3000;
-
-// Start the server
-server.listen(port, () => {
-  console.log(`Node.js HTTP server is running on port ${port}`);
+// starting server on port based on environment variable
+const PORT = process.env.SERVER_PORT;
+app.listen(PORT, () => {
+  console.log(`Server started on port: ${PORT}`);
 });
