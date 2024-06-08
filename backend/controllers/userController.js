@@ -1,11 +1,15 @@
 const generateToken = require("../config/jwt");
 const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
+const crypto = require("crypto");
+const bcrypt = require("bcrypt");
+const sendEmail = require("../config/email");
 
 const registerUser = asyncHandler(async (req, res) => {
   // parsing request body
   const username = req.body.username;
-  const password = req.body.password;
+  let password = req.body.password;
+  const email = req.body.email;
   const role = "student";
 
   // checking if user already exists
@@ -18,10 +22,14 @@ const registerUser = asyncHandler(async (req, res) => {
     return;
   }
 
+  const salt = await bcrypt.genSalt(10);
+  password = await bcrypt.hash(password, salt);
+
   // creating a new user
   const newUser = await User.create({
     username: username,
     password: password,
+    email: email,
     role: role,
   });
 
@@ -122,6 +130,76 @@ const getUser = asyncHandler(async (req, res) => {
   }
 });
 
+const updatePassword = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const password = req.body.password;
+  try {
+    const user = await User.findById(userId);
+    if (password) {
+      user.password = password;
+      await user.save();
+      res.send({
+        status: "true",
+        message: "Password updated successfully",
+      });
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const forgotPassworkToken = asyncHandler(async (req, res) => {
+  const email = req.body.email;
+  const user = await User.findOne({ email: email });
+  if (!user) throw new Error("User with the given email doesn't exist");
+  try {
+    const token = await user.generatePasswordResetToken();
+    await user.save();
+    const resetLink = `http://localhost:4000/reset-password/${token}`;
+
+    const data = {
+      subject: "AI LMS: Reset Password",
+      to: email,
+      text: `Hey ${user.username}, your reset link is ${resetLink}`,
+      html: resetLink,
+    };
+    sendEmail(data);
+
+    res.send({
+      status: "true",
+      message: "Reset password link sent successfully",
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+  let password = req.body.password;
+  const token = req.params.token;
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    resetTokenExpires: { $gt: Date.now() },
+  });
+
+  if (!user) throw new Error("Token expired, please try again!");
+
+  const salt = await bcrypt.genSalt(10);
+  password = await bcrypt.hash(password, salt);
+
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.resetTokenExpires = undefined;
+  await user.save();
+
+  res.send({
+    status: "true",
+    message: "Password reset successfully",
+  });
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -129,4 +207,7 @@ module.exports = {
   updateUser,
   deleteUser,
   getUser,
+  updatePassword,
+  forgotPassworkToken,
+  resetPassword,
 };
