@@ -14,25 +14,35 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
         next();
       }
     } catch (error) {
-      throw new Error("Not Authorized");
+      throw new Error("User authentication token invalid!");
     }
   } else {
-    throw new Error("Not valid request");
+    throw new Error("User authentication token is not passed properly!");
   }
 });
 
 const onlyAdmin = asyncHandler(async (req, res, next) => {
   const user = req.user;
-  console.log(user);
+  if (!user) throw new Error("User is not set!");
   if (user.role !== "admin") throw new Error("User is not admin!");
   next();
 });
 
 const onlyInstructor = asyncHandler(async (req, res, next) => {
-  const username = req.user.username;
-  const user = await User.findOne({ username: username });
+  const user = req.user;
+  if (!user) throw new Error("User is not set!");
   if (user.role !== "instructor") throw new Error("User is not instructor!");
   next();
 });
 
-module.exports = { authMiddleware, onlyAdmin, onlyInstructor };
+const onlyAllow = (listOfRoles) => {
+  return asyncHandler(async (req, res, next) => {
+    const user = req.user;
+    if (!user) throw new Error("User is not set!");
+    if (!listOfRoles.includes(user.role))
+      throw new Error("User is not authorised for this operation!");
+    next();
+  });
+};
+
+module.exports = { authMiddleware, onlyAdmin, onlyInstructor, onlyAllow };

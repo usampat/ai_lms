@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const connectDB = require("./config/db");
 const { handleNotFound, handleError } = require("./middlewares/errorHandler");
 const userRouter = require("./routes/userRoutes");
+const courseRouter = require("./routes/courseRoutes");
 
 // setting up environment variables
 require("dotenv").config();
@@ -15,15 +16,21 @@ const app = express();
 
 app.use(bodyParser.json());
 
+// routes
 app.use("/user", userRouter);
+app.use("/course", courseRouter);
+
+// handling error routes
 app.use(handleNotFound);
 app.use(handleError);
 
+// health check route
 app.get("/health", (req, res) => {
   res.send({
     health: "good",
   });
 });
+
 // starting server on port based on environment variable
 const PORT = process.env.SERVER_PORT;
 app.listen(PORT, () => {

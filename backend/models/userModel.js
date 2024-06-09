@@ -29,8 +29,8 @@ let userSchema = new mongoose.Schema({
     type: String,
   },
   resetTokenExpires: {
-    type: Number
-  }
+    type: Number,
+  },
 });
 
 userSchema.methods.isPasswordMatched = async function (password) {

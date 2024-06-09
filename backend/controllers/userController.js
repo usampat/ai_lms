@@ -10,7 +10,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const username = req.body.username;
   let password = req.body.password;
   const email = req.body.email;
-  const role = "student";
+  const role = req.body.role;
 
   // checking if user already exists
   const user = await User.findOne({ username: username });
