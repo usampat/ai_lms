@@ -8,6 +8,7 @@ const courseRouter = require("./routes/courseRoutes");
 const assignmentRouter = require("./routes/assignmentRouter");
 const quizRouter = require("./routes/quizRouter");
 const discussionRouter = require("./routes/discussionRouter");
+const announcementRouter = require("./routes/announcementRouter");
 
 // setting up environment variables
 require("dotenv").config();
@@ -25,6 +26,7 @@ app.use("/course", courseRouter);
 app.use("/assignment", assignmentRouter);
 app.use("/quiz", quizRouter);
 app.use("/discussion", discussionRouter);
+app.use("/announcement", announcementRouter);
 
 // handling error routes
 app.use(handleNotFound);
