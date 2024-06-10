@@ -5,7 +5,8 @@ const connectDB = require("./config/db");
 const { handleNotFound, handleError } = require("./middlewares/errorHandler");
 const userRouter = require("./routes/userRoutes");
 const courseRouter = require("./routes/courseRoutes");
-const assignmentRouter = require("./routes/assignmentRouter")
+const assignmentRouter = require("./routes/assignmentRouter");
+const quizRouter = require("./routes/quizRouter");
 
 // setting up environment variables
 require("dotenv").config();
@@ -20,7 +21,8 @@ app.use(bodyParser.json());
 // routes
 app.use("/user", userRouter);
 app.use("/course", courseRouter);
-app.use("/assignment", assignmentRouter)
+app.use("/assignment", assignmentRouter);
+app.use("/quiz", quizRouter);
 
 // handling error routes
 app.use(handleNotFound);
