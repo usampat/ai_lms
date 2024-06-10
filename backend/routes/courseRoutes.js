@@ -9,9 +9,6 @@ const {
   updateCourseDetails,
 } = require("../controllers/courseController");
 const { onlyAllow, authMiddleware } = require("../middlewares/authMiddleware");
-const assignmentRouter = require("../routes/assignmentRouter")
-
-courseRouter.use(assignmentRouter);
 
 courseRouter.post(
   "/add",
