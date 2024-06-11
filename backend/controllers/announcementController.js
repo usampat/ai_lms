@@ -1,12 +1,26 @@
 const Announcement = require("../models/announcementModel");
+const Course = require("../models/courseModel");
 const asyncHandler = require("express-async-handler");
+const sendEmail = require("../config/email");
 
 // Create a new announcement
 const createAnnouncement = asyncHandler(async (req, res) => {
-  const { title, content } = req.body;
+  const { course, title, content } = req.body;
   const author = req.user._id;
+  const courseObj = await Course.findById(course).populate("people");
+
+  for (let student of courseObj["people"]) {
+    const data = {
+      subject: "LMS: New Announcement",
+      to: student["email"],
+      text: content,
+      html: content,
+    };
+    sendEmail(data);
+  }
 
   const announcement = new Announcement({
+    course,
     title,
     content,
     author,

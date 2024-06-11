@@ -7,6 +7,7 @@ const {
   getCourseById,
   deleteCourse,
   updateCourseDetails,
+  addStudentToCourse,
 } = require("../controllers/courseController");
 const { onlyAllow, authMiddleware } = require("../middlewares/authMiddleware");
 
@@ -43,6 +44,13 @@ courseRouter.delete(
   authMiddleware,
   onlyAllow(["instructor", "admin"]),
   deleteCourse
+);
+
+courseRouter.post(
+  "/:id/add-student",
+  authMiddleware,
+  onlyAllow(["instructor", "admin"]),
+  addStudentToCourse
 );
 
 module.exports = courseRouter;

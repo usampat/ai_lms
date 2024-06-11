@@ -42,11 +42,12 @@ let courseSchema = new mongoose.Schema({
     default: [],
     required: false,
   },
-  people: {
-    type: [mongoose.Types.ObjectId],
-    default: [],
-    required: true,
-  },
+  people: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Course", courseSchema);

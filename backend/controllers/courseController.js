@@ -107,10 +107,49 @@ const deleteCourse = asyncHandler(async (req, res) => {
   });
 });
 
+const addStudentToCourse = asyncHandler(async (req, res) => {
+  const { studentId } = req.body;
+  const course = await Course.findById(req.params.id);
+
+  if (!course) {
+    res.status(404).send({
+      status: "false",
+      message: "Course not found",
+    });
+    return;
+  }
+  const student = await User.findById(studentId);
+  if (!student) {
+    res.status(404).send({
+      status: "false",
+      message: "Student not found",
+    });
+    return;
+  }
+
+  if (course.people.includes(studentId)) {
+    res.status(400).send({
+      status: "false",
+      message: "Student is already enrolled in this course",
+    });
+    return;
+  }
+
+  course.people.push(studentId);
+  await course.save();
+
+  res.send({
+    status: "true",
+    message: "Student added to the course successfully",
+    body: course,
+  });
+});
+
 module.exports = {
   createCourse,
   getAllCourses,
   getCourseById,
   updateCourseDetails,
   deleteCourse,
+  addStudentToCourse,
 };
