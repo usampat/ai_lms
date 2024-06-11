@@ -6,6 +6,8 @@ const {
   getAssignmentById,
   updateAssignment,
   deleteAssignment,
+  addSubmission,
+  upload
 } = require("../controllers/assignmentController");
 
 const assignmentRouter = express.Router();
@@ -43,6 +45,14 @@ assignmentRouter.delete(
   authMiddleware,
   onlyAllow(["instructor", "admin"]),
   deleteAssignment
+);
+
+assignmentRouter.post(
+  "/:id/submit",
+  authMiddleware,
+  onlyAllow(["student", "admin"]),
+  upload.single("file"),
+  addSubmission
 );
 
 module.exports = assignmentRouter;

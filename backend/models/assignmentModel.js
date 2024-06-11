@@ -1,6 +1,26 @@
+// AssignmentModel.js
 const mongoose = require("mongoose");
 
+const submissionSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Types.ObjectId,
+    required: true,
+  },
+  content: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const assignmentSchema = new mongoose.Schema({
+  course: {
+    type: mongoose.Types.ObjectId,
+    required: false,
+  },
   title: {
     type: String,
     required: true,
@@ -24,9 +44,8 @@ const assignmentSchema = new mongoose.Schema({
   },
 
   submissions: {
-    type: [String],
+    type: [submissionSchema],
     default: [],
-    requierd: [],
   },
   allowedSubmissions: {
     type: [String],

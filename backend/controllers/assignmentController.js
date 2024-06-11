@@ -1,10 +1,34 @@
 const Assignment = require("../models/assignmentModel");
 const asyncHandler = require("express-async-handler");
 
+const fs = require("fs");
+const path = require("path");
+const multer = require("multer");
+
+// Set up multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const assignmentId = req.params.id;
+    const uploadDir = path.join(
+      __dirname,
+      `${process.env.UPLOAD_DIR}/assignment-${assignmentId}`
+    );
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+const upload = multer({ storage });
+
 // Create a new assignment
 const createAssignment = asyncHandler(async (req, res) => {
   // parsing the body
   const {
+    course,
     title,
     description,
     points,
@@ -16,6 +40,7 @@ const createAssignment = asyncHandler(async (req, res) => {
 
   // saving the assignment in database
   const assignment = new Assignment({
+    course,
     title,
     description,
     points,
@@ -25,6 +50,15 @@ const createAssignment = asyncHandler(async (req, res) => {
     author: author,
   });
   await assignment.save();
+
+  // Create a directory for the assignment submissions
+  const assignmentDir = path.join(
+    __dirname,
+    `${process.env.UPLOAD_DIR}/assignment-${assignment._id}`
+  );
+  if (!fs.existsSync(assignmentDir)) {
+    fs.mkdirSync(assignmentDir, { recursive: true });
+  }
 
   res.send({
     status: "true",
@@ -103,10 +137,51 @@ const deleteAssignment = asyncHandler(async (req, res) => {
   });
 });
 
+// Add a new submission to an assignment
+const addSubmission = asyncHandler(async (req, res) => {
+  const assignmentId = req.params.id;
+  const userId = req.user._id;
+  const assignment = await Assignment.findById(assignmentId);
+
+  if (!assignment) {
+    res.status(404).send({
+      status: "false",
+      message: "Assignment not found",
+    });
+    return;
+  }
+
+  // Save file to the assignment's folder
+  const file = req.file;
+  if (!file) {
+    res.status(400).send({
+      status: "false",
+      message: "No file submitted",
+    });
+    return;
+  }
+
+  const newSubmission = {
+    user: userId,
+    content: file.filename,
+  };
+
+  assignment.submissions.push(newSubmission);
+  await assignment.save();
+
+  res.send({
+    status: "true",
+    message: "Submission added successfully",
+    body: newSubmission,
+  });
+});
+
 module.exports = {
   createAssignment,
   getAllAssignments,
   getAssignmentById,
   updateAssignment,
   deleteAssignment,
+  addSubmission,
+  upload,
 };
