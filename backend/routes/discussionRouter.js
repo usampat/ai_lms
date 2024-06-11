@@ -11,18 +11,8 @@ const {
 const { authMiddleware, onlyAllow } = require("../middlewares/authMiddleware");
 
 discussionRouter.post("/add", authMiddleware, createDiscussion);
-discussionRouter.get(
-  "/all",
-  authMiddleware,
-  onlyAllow(["instructor", "admin"]),
-  getAllDiscussions
-);
-discussionRouter.get(
-  "/:id",
-  authMiddleware,
-  onlyAllow(["instructor", "admin"]),
-  getDiscussionById
-);
+discussionRouter.get("/all", authMiddleware, getAllDiscussions);
+discussionRouter.get("/:id", authMiddleware, getDiscussionById);
 discussionRouter.post("/:id/messages", authMiddleware, addMessageToDiscussion);
 discussionRouter.delete(
   "/:id",
