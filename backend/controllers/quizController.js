@@ -11,7 +11,7 @@ const createQuiz = asyncHandler(async (req, res) => {
     description,
     duration,
     questions,
-    author: author
+    author: author,
   });
   await quiz.save();
 
@@ -84,7 +84,7 @@ const updateQuiz = asyncHandler(async (req, res) => {
 const deleteQuiz = asyncHandler(async (req, res) => {
   // find and delete the quiz in the database
   const quiz = await Quiz.findByIdAndDelete(req.params.id);
-  
+
   // check if the quiz was present
   if (!quiz) {
     res.status(404).send({
@@ -99,10 +99,47 @@ const deleteQuiz = asyncHandler(async (req, res) => {
   });
 });
 
+// New function to submit quiz and return grade
+const submitQuiz = asyncHandler(async (req, res) => {
+  const { answers } = req.body;
+  const quiz = await Quiz.findById(req.params.id);
+
+  if (!quiz) {
+    res.status(404).send({
+      status: "false",
+      message: "Quiz not found",
+    });
+    return;
+  }
+
+  let totalQuestions = quiz.questions.length;
+  let correctAnswers = 0;
+
+  quiz.questions.forEach((question, index) => {
+    const correctOption = question.options.find((option) => option.isCorrect);
+    if (correctOption && correctOption.option === answers[index]) {
+      correctAnswers++;
+    }
+  });
+
+  let grade = (correctAnswers / totalQuestions) * 100;
+
+  res.send({
+    status: "true",
+    message: "Quiz submitted successfully",
+    body: {
+      totalQuestions,
+      correctAnswers,
+      grade,
+    },
+  });
+});
+
 module.exports = {
   createQuiz,
   getAllQuizzes,
   getQuizById,
   updateQuiz,
   deleteQuiz,
+  submitQuiz,
 };

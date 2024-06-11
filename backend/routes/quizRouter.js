@@ -7,6 +7,7 @@ const {
   getQuizById,
   updateQuiz,
   deleteQuiz,
+  submitQuiz,
 } = require("../controllers/quizController");
 const { authMiddleware, onlyAllow } = require("../middlewares/authMiddleware");
 
@@ -39,6 +40,13 @@ quizRouter.delete(
   authMiddleware,
   onlyAllow(["instructor", "admin"]),
   deleteQuiz
+);
+
+quizRouter.post(
+  "/:id/submit",
+  authMiddleware,
+  onlyAllow(["student"]),
+  submitQuiz
 );
 
 module.exports = quizRouter;
