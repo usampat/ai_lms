@@ -2,6 +2,7 @@ const express = require("express");
 const {
   registerUser,
   loginUser,
+  getLoggedInUser,
   getAllUser,
   updateUser,
   deleteUser,
@@ -14,6 +15,7 @@ const { onlyAdmin, authMiddleware } = require("../middlewares/authMiddleware");
 
 const userRouter = express.Router();
 
+userRouter.get("/", authMiddleware, getLoggedInUser);
 userRouter.get("/all-users", authMiddleware, onlyAdmin, getAllUser);
 userRouter.get("/:id", authMiddleware, getUser);
 

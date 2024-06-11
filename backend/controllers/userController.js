@@ -55,12 +55,25 @@ const loginUser = asyncHandler(async (req, res) => {
     });
     return;
   } else {
-    res.send({
+    res.status(400).send({
       status: "false",
       message: "Username or Password is incorrect",
     });
   }
 });
+
+const getLoggedInUser = asyncHandler(async (req, res) => {
+  const user = req.user;
+
+  res.status(200).send({
+    status: "true",
+    message: "User login token is valid",
+    body: {
+      user: user
+    }
+  })
+})
+
 
 const getAllUser = asyncHandler(async (req, res) => {
   try {
@@ -203,6 +216,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  getLoggedInUser,
   getAllUser,
   updateUser,
   deleteUser,
