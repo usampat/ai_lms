@@ -12,57 +12,61 @@ import Header from "../../components/navbar/Navbar";
 import { useNavigate } from "react-router-dom";
 import Background from "../../components/background/Background";
 
-const demoUsers = {
-  students: [
-    { id: 1, username: "student1", password: "pwd1" },
-    { id: 2, username: "student2", password: "pwd2" },
-  ],
-  teachers: [
-    { id: 1, username: "teacher1", password: "pwd1" },
-    { id: 2, username: "teacher2", password: "pwd2" },
-  ],
-};
-
+const BASE_URL = "http://localhost:4000";
 function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("student");
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
-  function setLoggedInUser(user) {
-    localStorage.setItem("loggedInUser", JSON.stringify({ user }));
-    console.log((localStorage.getItem('loggedInUser')));
-    localStorage.setItem("auth", "true");
-  }
-
-  const handleAuth = () => {
-    if (isLogin) {
-      const user = demoUsers[role === "student" ? "students" : "teachers"].find(
-        (user) => user.username === username && user.password === password
-      );
-      if (user) {
-        setLoggedInUser({ username, role });
-        toast.success("Login successful!");
-        navigate("/");
-      } else {
-        toast.error("Invalid credentials");
-        localStorage.setItem("auth", false);
-      }
-    } else {
-      const newUser = { id: Date.now(), username, password };
-      demoUsers[role === "student" ? "students" : "teachers"].push(newUser);
-      setLoggedInUser({ username, role });
-      toast.success("Signup successful!");
-      navigate("/");
-    }
-    setUsername("");
-    setPassword("");
+  const handleChange = (value) => {
+    setIsLogin(value);
   };
 
-  const handleChange = () => {
-    setIsLogin(!isLogin);
+  const handleAuth = async () => {
+    try {
+      if (isLogin) {
+        await loginUser({ username, password });
+      } else {
+        await registerUser({ email, username, password, role });
+      }
+    } catch (error) {
+      toast.error("Authetication Failed!");
+      console.log(error);
+    }
+  };
+
+  const loginUser = async (credentials) => {
+    const response = await fetch(`${BASE_URL}/user/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+    });
+
+    const data = await response.json();
+    if (data.status == "true") toast.success(data.message);
+    else toast.error(data.message);
+
+    localStorage.setItem("jwtToken", data.body.token);
+    navigate("/dashboard");
+  };
+
+  const registerUser = async (userInfo) => {
+    const response = await fetch(`${BASE_URL}/user/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userInfo),
+    });
+
+    const data = await response.json();
+    if (data.status == "true") toast.success(data.message);
+    else toast.error(data.message);
   };
 
   return (
@@ -72,12 +76,18 @@ function Auth() {
         <Background />
         <div className="toggle-row">
           <ToggleButtonGroup
-            type="checkbox"
+            type="radio"
+            name="authType"
             value={isLogin}
             onChange={handleChange}
             style={{ height: "40px" }}
           >
-            <ToggleButton className="toggle-button" id="tbg-btn-1" value={true} variant="outline-success">
+            <ToggleButton
+              className="toggle-button"
+              id="tbg-btn-1"
+              value={true}
+              variant="outline-success"
+            >
               Login
             </ToggleButton>
             <ToggleButton
@@ -107,23 +117,23 @@ function Auth() {
                 className="role-select"
               >
                 <option value="student">Student</option>
-                <option value="teacher">Teacher</option>
+                <option value="instructor">Instructor</option>
               </Form.Select>
             </Form.Group>
             {!isLogin && (
               <Form.Group className="mb-3">
-                <Form.Label>Name</Form.Label>
+                <Form.Label>Email</Form.Label>
                 <Form.Control
                   type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                   className="name-input"
                 />
               </Form.Group>
             )}
             <Form.Group className="mb-3">
-              <Form.Label>Username/Email</Form.Label>
+              <Form.Label>Username</Form.Label>
               <Form.Control
                 type="text"
                 value={username}
@@ -143,7 +153,11 @@ function Auth() {
               />
             </Form.Group>
             <div style={{ textAlign: "center" }}>
-              <Button variant="success" style={{border:'none'}} type="submit">
+              <Button
+                variant="success"
+                style={{ border: "none" }}
+                type="submit"
+              >
                 {isLogin ? "LogIn" : "Signup"}
               </Button>
             </div>

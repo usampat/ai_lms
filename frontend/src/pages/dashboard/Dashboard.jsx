@@ -5,7 +5,7 @@ import "./Dashboard.css";
 import { Row, Col, Container } from "react-bootstrap";
 import Sidebar from "../../components/Sidebar/sidebar";
 import Header from "../../components/navbar/Navbar";
-import { News, genderData, attendanceData } from "./dashConstants";
+import { genderData, attendanceData } from "./dashConstants";
 import { Pie, Bar } from "react-chartjs-2";
 
 import {
@@ -18,6 +18,7 @@ import {
   BarElement,
   Title,
 } from "chart.js";
+import { useNavigate } from "react-router-dom";
 
 // Register ChartJS components
 ChartJS.register(
@@ -85,6 +86,7 @@ const mockStudents = [
   { id: 5, name: "Student 5", classId: 4, grades: {} },
 ];
 
+const BASE_URL = "http://localhost:4000";
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [joinedOrgs, setJoinedOrgs] = useState([]);
@@ -101,13 +103,52 @@ const Dashboard = () => {
   const [newGrade, setNewGrade] = useState("");
   const [newAssignmentName, setNewAssignmentName] = useState("");
   const [showSideBar, setShowSideBar] = useState(false);
+  const [announcements, setAnnouncements] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"))?.user;
-    if (loggedInUser) {
-      setUser(loggedInUser);
+    const token = localStorage.getItem("jwtToken");
+    if (!token) {
+      navigate("/");
+      return;
     }
+
+    const checkAuth = async () => {
+      const response = await fetch(`${BASE_URL}/user`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        navigate("/");
+        return;
+      }
+
+      const data = await response.json();
+
+      setUser(data.body.user);
+    };
+    checkAuth();
+    getAnnouncements();
   }, []);
+
+  const getAnnouncements = async () => {
+    const token = localStorage.getItem("jwtToken");
+    const response = await fetch(`${BASE_URL}/announcement`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) return;
+    const data = await response.json();
+    if (data.status != "true") return;
+   setAnnouncements(data.body);
+  };
 
   useEffect(() => {
     if (selectedOrg) {
@@ -185,7 +226,7 @@ const Dashboard = () => {
   };
 
   const toggleSidebar = () => {
-    setShowSideBar(!showSideBar); 
+    setShowSideBar(!showSideBar);
   };
 
   return (
@@ -197,7 +238,9 @@ const Dashboard = () => {
         <Col className={`sidebar-col ${showSideBar ? "expanded" : ""}`}>
           <Sidebar showSideBar={showSideBar} />
         </Col>
-        <Col className={`content-col ${showSideBar ? "collapsed" : "expanded"}`}>
+        <Col
+          className={`content-col ${showSideBar ? "collapsed" : "expanded"}`}
+        >
           <div className="dashboard-container">
             <Container>
               <h2>DASHBOARD</h2>
@@ -210,7 +253,7 @@ const Dashboard = () => {
                       scrollamount="3"
                       style={{ height: "250px" }}
                     >
-                      {News.map((x) => {
+                      {announcements.map((x) => {
                         return (
                           <React.Fragment key={x.id}>
                             <span>{x.text}</span>
@@ -229,7 +272,7 @@ const Dashboard = () => {
               <Row>
                 <Col className=" graph2" xl={12} lg={12}>
                   <div className="box-heading">Attendance Data</div>
-                  <div style={{ height: "160px", width:'100%' }}>
+                  <div style={{ height: "160px", width: "100%" }}>
                     <Bar
                       data={attendanceData}
                       options={{

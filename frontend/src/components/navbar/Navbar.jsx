@@ -4,11 +4,11 @@ import { Container, Nav, Navbar, Button, Offcanvas } from "react-bootstrap";
 import { IoMdMenu } from "react-icons/io";
 
 import "./Navbar.css";
-
-function Header({ toggleSidebar, dashboard }) {
+const BASE_URL = "http://localhost:4000";
+function Header({ toggleSidebar, dashboard, setUser }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [login, setLogin] = useState(localStorage.getItem("auth") === "true");
-  const [role, setRole] = useState('');
+  const [login, setLogin] = useState(false);
+  const [role, setRole] = useState("");
   const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768);
 
   const toggleNavbar = () => {
@@ -16,26 +16,35 @@ function Header({ toggleSidebar, dashboard }) {
   };
   const navigate = useNavigate();
   const handleLogOut = () => {
-    localStorage.setItem("auth", false);
-    // setLogin(false);
-    navigate("/auth");
+    localStorage.removeItem("jwtToken");
+    navigate("/");
   };
 
   useEffect(() => {
-    const handleStorageChange = () => {
-      setLogin(localStorage.getItem("auth") === "true");
-      const storedUser = localStorage.getItem('loggedInUser');
-      if (storedUser) {
-        const user = JSON.parse(storedUser);
-        setRole(user.user.role);
-      }
-    };
-    handleStorageChange();
-    window.addEventListener("storage", handleStorageChange);
+    const token = localStorage.getItem("jwtToken");
+    if (!token) {
+      return;
+    }
 
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
+    const checkAuth = async () => {
+      const response = await fetch(`${BASE_URL}/user`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        console.log(response);
+        navigate("/");
+      }
+
+      const data = await response.json();
+      setLogin(true);
+
+      if (setUser) setUser(data.body.user);
     };
+    checkAuth();
   }, []);
 
   useEffect(() => {
@@ -55,7 +64,7 @@ function Header({ toggleSidebar, dashboard }) {
         {console.log(role)}
         {dashboard && !isMobileView && (
           <button onClick={toggleSidebar} className="sidebar-icon">
-            <IoMdMenu color="white"/>
+            <IoMdMenu color="white" />
           </button>
         )}
         {/* {console.log(localStorage.getItem('loggedInUser').length)} */}
@@ -81,9 +90,13 @@ function Header({ toggleSidebar, dashboard }) {
               <Nav.Link href="/" className="nav-link">
                 Home
               </Nav.Link>
-              {isMobileView && role==='teacher' && (
+              {isMobileView && role === "teacher" && (
                 <>
-                  <Link to="/makequiz" className="nav-link" onClick={toggleNavbar}>
+                  <Link
+                    to="/makequiz"
+                    className="nav-link"
+                    onClick={toggleNavbar}
+                  >
                     Make Quiz
                   </Link>
                   <Link
@@ -93,7 +106,6 @@ function Header({ toggleSidebar, dashboard }) {
                   >
                     Make Assignments
                   </Link>
-                 
                 </>
               )}
               {isMobileView && (
@@ -115,16 +127,12 @@ function Header({ toggleSidebar, dashboard }) {
                   >
                     Results
                   </Link>
-                  <Link
-                    to="/chat"
-                    className="nav-link"
-                    onClick={toggleNavbar}
-                  >
+                  <Link to="/chat" className="nav-link" onClick={toggleNavbar}>
                     Chat
                   </Link>
                 </>
               )}
-              
+
               <Nav.Link href="/pricing">Pricing</Nav.Link>
               {login ? (
                 <Nav.Link
