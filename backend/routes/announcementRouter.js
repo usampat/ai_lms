@@ -7,11 +7,32 @@ const {
   updateAnnouncement,
   deleteAnnouncement,
 } = require("../controllers/announcementController");
+const { authMiddleware, onlyAllow } = require("../middlewares/authMiddleware");
 
-announcementRouter.post("/", createAnnouncement);
-announcementRouter.get("/", getAllAnnouncements);
-announcementRouter.get("/:id", getAnnouncementById);
-announcementRouter.put("/:id", updateAnnouncement);
-announcementRouter.delete("/:id", deleteAnnouncement);
+announcementRouter.post(
+  "/add",
+  authMiddleware,
+  onlyAllow(["instructor", "admin"]),
+  createAnnouncement
+);
+announcementRouter.get(
+  "/all",
+  authMiddleware,
+  onlyAllow(["instructor", "admin"]),
+  getAllAnnouncements
+);
+announcementRouter.get("/:id", authMiddleware, getAnnouncementById);
+announcementRouter.put(
+  "/:id",
+  authMiddleware,
+  onlyAllow(["instructor", "admin"]),
+  updateAnnouncement
+);
+announcementRouter.delete(
+  "/:id",
+  authMiddleware,
+  onlyAllow(["instructor", "admin"]),
+  deleteAnnouncement
+);
 
 module.exports = announcementRouter;
