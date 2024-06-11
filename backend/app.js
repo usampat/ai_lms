@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const bodyParser = require("body-parser");
 
 const connectDB = require("./config/db");
@@ -10,7 +11,7 @@ const quizRouter = require("./routes/quizRouter");
 const discussionRouter = require("./routes/discussionRouter");
 const announcementRouter = require("./routes/announcementRouter");
 const attendanceRouter = require("./routes/attendanceRouter");
-const fileRouter = require("./routes/fileRouter")
+const fileRouter = require("./routes/fileRouter");
 
 // setting up environment variables
 require("dotenv").config();
@@ -20,7 +21,15 @@ connectDB();
 // server
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
+
+// health check route
+app.get("/health", (req, res) => {
+  res.send({
+    health: "good",
+  });
+});
 
 // routes
 app.use("/user", userRouter);
@@ -30,18 +39,11 @@ app.use("/quiz", quizRouter);
 app.use("/discussion", discussionRouter);
 app.use("/announcement", announcementRouter);
 app.use("/attendance", attendanceRouter);
-app.use("/file", fileRouter)
+app.use("/file", fileRouter);
 
 // handling error routes
 app.use(handleNotFound);
 app.use(handleError);
-
-// health check route
-app.get("/health", (req, res) => {
-  res.send({
-    health: "good",
-  });
-});
 
 // starting server on port based on environment variable
 const PORT = process.env.SERVER_PORT;
